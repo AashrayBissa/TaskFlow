@@ -1,0 +1,15 @@
+input{
+  background-color: #2c2e2c;
+  font-size: 1rem;
+  padding: 0.6rem;
+  padding-left: 1rem;
+  border: 1px solid #28282B;
+}
+
+button{
+  height: 2.5rem;
+}
+
+button:hover{
+    cursor: pointer;
+}

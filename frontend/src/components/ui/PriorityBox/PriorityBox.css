@@ -1,0 +1,29 @@
+.radio-outer{
+    padding: 0.4%;
+    width: 16rem;
+    height: 2.6rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: rgb(46, 46, 46);
+    border-radius: 16px;
+} 
+
+.radio-label{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 2.5% 9.1%;
+    height: 95%;
+    border-radius: 15px;
+    font-size: 90%;
+    transition: background-color 0.4s ease;
+}
+
+.inp:checked + .radio-label{
+    background-color: black;
+}
+
+.inp{
+    display: none;
+}
