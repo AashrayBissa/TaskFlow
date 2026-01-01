@@ -1,0 +1,20 @@
+.card{
+    transition: transform 0.4s ease;
+}
+
+.card:hover{
+    transform: scale(1.03);
+}
+
+.editIcon{
+    font-size: 0.95rem;
+    color: #2E95D9;
+}
+
+.deleteIcon{
+    color: rgb(187, 91, 91);
+}
+
+.description{
+    margin-left: 2.11rem;
+}

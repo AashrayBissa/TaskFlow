@@ -1,0 +1,50 @@
+.outer{
+  padding: 1rem;
+}
+
+#RLabel{
+  position: absolute;
+  display: inline-block;
+  border: 1px solid #363434;
+  border-radius: 50px;
+  height: 1.1rem;
+  width: 2rem;
+}
+
+#CLabel{
+  border-radius: 50%;
+  padding: 0% 20%;
+  height: 80%;
+  background-color: #363434;
+  position: absolute;
+  top: 10%;
+  left: 2%;
+  transition: transform 0.4s ease;
+}
+
+#ILabel{
+  border-radius: 50%;
+  padding: 0% 35%;
+  height: 63%;
+  background-color: #605e5e;
+  position: absolute;
+  top: 20%;
+  left: 15%;
+}
+
+#inp:checked + #RLabel #CLabel #ILabel{
+  display: none;
+}
+
+#inp:checked + #RLabel #CLabel{
+  background-color: #2E95D9;
+  transform: translateX(133%);
+}
+
+#inp:checked + #RLabel{
+  border: 1px solid #2E95D9;
+}
+
+#inp{
+  display: none;
+}
