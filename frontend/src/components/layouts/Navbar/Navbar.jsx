@@ -47,6 +47,7 @@ export default function Navbar(){
                 </div>
                 <div className="nav-center">
                   <NavLink to="/dashboard" className={activeLink}>Dashboard</NavLink>
+                  <NavLink to="/prioritize" className={activeLink}>Prioritize</NavLink>
                   <NavLink to="/profile" className={activeLink}>Profile</NavLink>
                 </div>
                 <div className="nav-end">

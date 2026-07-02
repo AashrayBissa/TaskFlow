@@ -7,11 +7,10 @@
 .task-grid{
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 1.8rem;
+    gap: 1.2rem;
 }
 
 .task-card{
-    min-height: 14.75rem;
     border: 1px solid var(--tf-border);
     border-radius: 0.8rem;
     background: var(--tf-bg-soft);
@@ -28,7 +27,7 @@
     height: 100%;
     display: flex;
     flex-direction: column;
-    padding: 1.65rem;
+    padding: 1.15rem;
 }
 
 .task-card-head{
@@ -56,8 +55,8 @@
 .task-title{
     margin: 0;
     color: var(--tf-text);
-    font-size: 1.45rem;
-    line-height: 1.35;
+    font-size: 1.2rem;
+    line-height: 1.3;
     font-weight: 900;
     overflow-wrap: anywhere;
 }
@@ -77,11 +76,11 @@
 }
 
 .description{
-    margin: 0.55rem 0 1.5rem 2.45rem;
+    margin: 0.4rem 0 1rem 2.45rem;
     color: var(--tf-muted);
-    font-size: 1.05rem;
+    font-size: 0.95rem;
     font-weight: 600;
-    line-height: 1.45;
+    line-height: 1.4;
     overflow-wrap: anywhere;
 }
 
