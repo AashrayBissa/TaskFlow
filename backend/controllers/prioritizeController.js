@@ -35,8 +35,19 @@ module.exports.prioritizeTasks = async (req, res) => {
       });
     }
 
+    const prioritized = (result.prioritizedTasks || [])
+      .map((p) => {
+        const idx = p.taskIndex;
+        if (typeof idx === "number" && idx > 0 && idx <= tasks.length) {
+          return { taskId: tasks[idx - 1]._id, rank: p.rank, reasoning: p.reasoning };
+        }
+        return null;
+      })
+      .filter(Boolean)
+      .sort((a, b) => a.rank - b.rank);
+
     res.status(200).json({
-      prioritized: result.prioritizedTasks,
+      prioritized,
       summary: result.summary || null,
       executionSequence: result.executionSequence || null,
     });
@@ -50,7 +61,7 @@ function buildPrompt(tasks) {
   const taskList = tasks
     .map(
       (t, i) =>
-        `${i + 1}. "${t.title}" | Description: ${t.description || "N/A"} | Priority: ${t.priority} | Due: ${t.dueDate ? new Date(t.dueDate).toISOString().split("T")[0] : "N/A"} | Status: ${t.isCompleted ? "Completed" : "Pending"}`
+        `${i + 1}. ID: ${t._id} | "${t.title}" | Description: ${t.description || "N/A"} | Priority: ${t.priority} | Due: ${t.dueDate ? new Date(t.dueDate).toISOString().split("T")[0] : "N/A"} | Status: ${t.isCompleted ? "Completed" : "Pending"}`
     )
     .join("\n");
 
@@ -65,7 +76,7 @@ Return valid JSON only (no markdown, no explanation):
 {
   "prioritizedTasks": [
     {
-      "taskId": "<original _id>",
+      "taskIndex": <number of the task from the list above>,
       "rank": <number>,
       "reasoning": "<why this task got this rank, 10-15 words>"
     }
@@ -74,7 +85,7 @@ Return valid JSON only (no markdown, no explanation):
   "executionSequence": "<suggested order to tackle them>"
 }
 
-Order prioritizedTasks by rank ascending (1 = most urgent/important). For each task, include a short reasoning explaining why it was placed at that rank.`;
+Order prioritizedTasks by rank ascending (1 = most urgent/important). For each task, include a short reasoning explaining why it was placed at that rank. Use the taskIndex field to reference the task number from the list above.`;
 }
 
 async function callGemini(prompt) {

@@ -12,23 +12,20 @@ export default function Prioritize() {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    fetch(`${API}/dashboard`, { credentials: "include" })
-      .then((r) => r.json())
-      .then((data) => {
-        const list = Array.isArray(data) ? data : [];
+    Promise.all([
+      fetch(`${API}/dashboard`, { credentials: "include" }),
+      fetch(`${API}/dashboard/get-prioritization`, { credentials: "include" }),
+    ])
+      .then(async ([tasksRes, priorRes]) => {
+        const [tasksData, priorData] = await Promise.all([tasksRes.json(), priorRes.json()]);
+        const list = Array.isArray(tasksData) ? tasksData : [];
         setTasks(list);
         const allChecked = {};
         list.filter((t) => !t.isCompleted).forEach((t) => (allChecked[t._id] = true));
         setSelected(allChecked);
+        if (priorData.results) setResults(priorData.results);
       })
-      .catch(() => toast.error("Failed to load tasks."));
-
-    fetch(`${API}/dashboard/get-prioritization`, { credentials: "include" })
-      .then((r) => r.json())
-      .then((data) => {
-        if (data.results) setResults(data.results);
-      })
-      .catch(() => {});
+      .catch(() => toast.error("Failed to load data."));
   }, []);
 
   function toggle(id) {
@@ -84,7 +81,7 @@ export default function Prioritize() {
       if (data.aiUnavailable) {
         toast("AI key not set. Showing tasks in default order.", { icon: "?" });
         const fallback = {
-          prioritized: data.tasks.map((t) => ({ ...t, rank: 0, reasoning: "" })),
+          prioritized: data.tasks.map((t) => ({ taskId: t._id, rank: 0, reasoning: "" })),
           summary: null,
           executionSequence: null,
           aiUnavailable: true,
@@ -124,7 +121,8 @@ export default function Prioritize() {
   const prioritizedTasks = results
     ? results.prioritized
         .map((p) => {
-          const task = tasks.find((t) => t._id === p.taskId);
+          const id = p.taskId || p._id;
+          const task = tasks.find((t) => t._id === id);
           return task ? { ...task, rank: p.rank, reasoning: p.reasoning } : null;
         })
         .filter(Boolean)
@@ -189,33 +187,12 @@ export default function Prioritize() {
               <div style={{ marginBottom: "1.5rem" }}>
                 <h2 style={{ fontSize: "1.1rem", fontWeight: 700, marginBottom: "0.75rem" }}>Suggested Execution Sequence</h2>
                 <div style={{ display: "flex", flexDirection: "column", gap: "1.2rem" }}>
-                  {results.executionSequence.split(/\s*->\s*|,\s*\d+[\.\)]\s*/).map((step, i) => {
-                    const cleanTitle = step.replace(/^\d+[\.\)]\s*/, "").trim();
-                    const task = tasks.find((t) => t.title.toLowerCase() === cleanTitle.toLowerCase());
-                    return task ? (
-                      <Card key={i} task={task} fetchTasks={refreshTasks} />
-                    ) : (
-                      <article key={i} className="task-card">
-                        <div className="task-card-body" style={{ padding: "1.15rem" }}>
-                          <div className="task-card-head">
-                            <div className="task-title-row">
-                              <h2 className="task-title">{cleanTitle}</h2>
-                            </div>
-                          </div>
-                        </div>
-                      </article>
-                    );
-                  })}
+                  {[...prioritizedTasks].sort((a, b) => a.rank - b.rank).map((task) => (
+                    <Card key={task._id} task={task} fetchTasks={refreshTasks} />
+                  ))}
                 </div>
               </div>
             )}
-            <section className="task-grid-shell" aria-label="Prioritized Tasks" style={{ marginTop: 0 }}>
-              <div className="task-grid">
-                {prioritizedTasks.map((task) => (
-                  <Card key={task._id} task={task} fetchTasks={refreshTasks} />
-                ))}
-              </div>
-            </section>
           </>
         )}
       </div>
