@@ -97,7 +97,7 @@ JWT_SECRET=your_jwt_secret_here
 
 # Gemini API Configuration
 GEMINI_API_KEY=your_gemini_api_key_here
-GEMINI_MODEL=gemini-2.0-flash
+GEMINI_MODEL=gemini-3.1-flash-lite
 ```
 
 ### Frontend (.env)
