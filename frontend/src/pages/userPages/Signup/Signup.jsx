@@ -2,6 +2,8 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 
+const API = import.meta.env.VITE_API_URL || "http://localhost:8080";
+
 export default function Signup() {
 
   const navigate = useNavigate();
@@ -21,7 +23,7 @@ export default function Signup() {
   async function handleSubmit(event) {
     event.preventDefault();
 
-    const response = await fetch("http://localhost:8080/signup", {
+    const response = await fetch(`${API}/signup`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       credentials: "include",

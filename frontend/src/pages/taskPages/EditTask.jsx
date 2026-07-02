@@ -4,6 +4,8 @@ import toast from "react-hot-toast";
 import PriorityBox from "../../components/ui/PriorityBox/PriorityBox";
 import Switch from "../../components/ui/Switch/Switch";
 
+const API = import.meta.env.VITE_API_URL || "http://localhost:8080";
+
 export default function EditTask() {
     let {state} = useLocation();
     let navigate = useNavigate();
@@ -28,7 +30,7 @@ export default function EditTask() {
   let handleSubmit = async(event) => {
     event.preventDefault();
 
-    const response = await fetch(`http://localhost:8080/dashboard/editTask/${id}`,{
+    const response = await fetch(`${API}/dashboard/editTask/${id}`,{
       method: "PUT",
       headers: {"Content-Type": "application/json"},
       credentials: "include",

@@ -3,12 +3,14 @@ import "./Card.css";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 
+const API = import.meta.env.VITE_API_URL || "http://localhost:8080";
+
 export default function Card({task, fetchTasks, selectMode, selected, onSelect}) {
 
     const navigate = useNavigate();
 
      async function handleDelete (task)  {
-        const response = await fetch(`http://localhost:8080/dashboard/delTask/${task._id}`,{
+        const response = await fetch(`${API}/dashboard/delTask/${task._id}`,{
             method: "DELETE",
             credentials: "include"
         });
@@ -22,7 +24,7 @@ export default function Card({task, fetchTasks, selectMode, selected, onSelect})
     }
  
     async function handleCheck(task) {
-        const response = await fetch(`http://localhost:8080/dashboard/checkTask/${task._id}`, {
+        const response = await fetch(`${API}/dashboard/checkTask/${task._id}`, {
             method: "PUT",
             headers: {"Content-Type": "application/json"},
             credentials: "include",

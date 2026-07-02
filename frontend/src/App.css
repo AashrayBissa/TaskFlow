@@ -13,8 +13,7 @@
 
 .brand-mark {
   display: inline-flex;
-  width: 2rem;
-  height: 2rem;
+  font-size: 1.8rem;
   align-items: center;
   justify-content: center;
   color: var(--tf-primary);

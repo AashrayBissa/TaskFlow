@@ -3,19 +3,14 @@ import "./Navbar.css"
 import { NavLink, useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 
-const LogoIcon = () => (
-  <svg aria-hidden="true" className="nav-logo-icon" viewBox="0 0 32 32" fill="none">
-    <path d="M5 9H14M5 16H21M5 23H13" stroke="currentColor" strokeWidth="3" strokeLinecap="round" />
-    <path d="M24 7L28 11L24 15" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
-  </svg>
-);
+const API = import.meta.env.VITE_API_URL || "http://localhost:8080";
 
 export default function Navbar(){
     const navigate = useNavigate();
 
   const handleLogout = async () => {
     try {
-      const response = await fetch('http://localhost:8080/logout', {
+      const response = await fetch(`${API}/logout`, {
         method: 'POST',
         credentials: 'include',
       });
@@ -42,7 +37,7 @@ export default function Navbar(){
         <>
             <div className="nav">
                 <div className="nav-start">
-                    <LogoIcon />
+                    <i className="fa-solid fa-list-check nav-logo-icon"></i>
                     <span className="nav-brand">TaskFlow</span>
                 </div>
                 <div className="nav-center">

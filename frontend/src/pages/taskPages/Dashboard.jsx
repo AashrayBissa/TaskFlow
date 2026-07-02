@@ -5,6 +5,8 @@ import { useEffect, useState, useCallback } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 
+const API = import.meta.env.VITE_API_URL || "http://localhost:8080";
+
 export default function Dashboard() {
     const location = useLocation();
     const navigate = useNavigate();
@@ -20,7 +22,7 @@ export default function Dashboard() {
 
     const fetchUser = useCallback(async () => {
         try {
-            const res = await fetch("http://localhost:8080/user", {
+            const res = await fetch(`${API}/user`, {
                 credentials: "include",
             });
             const userData = await res.json().catch(() => ({}));
@@ -38,11 +40,11 @@ export default function Dashboard() {
     }, [navigate]);
 
     const fetchTasks = useCallback(async () => {
-        let url = "http://localhost:8080/dashboard";
+        let url = `${API}/dashboard`;
 
         if(location.pathname === "/dashboard/search"){
             const q = new URLSearchParams(filters).toString();
-            url = `http://localhost:8080/dashboard/search?${q}`;
+            url = `${API}/dashboard/search?${q}`;
         }
 
         try {

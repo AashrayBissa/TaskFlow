@@ -70,7 +70,15 @@ function buildPrompt(tasks) {
 Tasks:
 ${taskList}
 
-Consider: urgency (deadlines), importance (impact), effort (description length/complexity), current priority labels.
+Combine ALL of the following factors to determine each task's rank:
+
+- Priority label (high / medium / low) — base importance from the user
+- Deadline — sooner due date = higher urgency
+- Description — longer or more detailed tasks may require more effort
+- Title and description content — keywords suggesting high impact raise importance
+
+For each task, evaluate every factor together, not just one.
+Examples: high priority + near deadline = highest rank; low priority + far deadline = lowest rank; medium priority + near deadline could rank above high priority + no deadline.
 
 Return valid JSON only (no markdown, no explanation):
 {
@@ -82,10 +90,10 @@ Return valid JSON only (no markdown, no explanation):
     }
   ],
   "summary": "<one-sentence takeaway>",
-  "executionSequence": "<suggested order to tackle them>"
+  "executionSequence": "<personalized step-by-step plan using task titles, like 'First do Task A, then Task B, and along with that complete Task C, then do Task D along with Task E'>"
 }
 
-Order prioritizedTasks by rank ascending (1 = most urgent/important). For each task, include a short reasoning explaining why it was placed at that rank. Use the taskIndex field to reference the task number from the list above.`;
+Order prioritizedTasks by rank ascending (1 = most urgent/important). For each task, include a short reasoning explaining why it was placed at that rank. Use the taskIndex field to reference the task number from the list above. Write the executionSequence as a natural, conversational plan that groups related tasks together and suggests which can be done in parallel.`;
 }
 
 async function callGemini(prompt) {

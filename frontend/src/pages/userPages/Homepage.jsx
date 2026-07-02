@@ -2,12 +2,7 @@ import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import toast from "react-hot-toast";
 
-const LogoIcon = () => (
-  <svg aria-hidden="true" className="brand-mark" viewBox="0 0 32 32" fill="none">
-    <path d="M16 4L27 24C23.8 26.3 20.1 27.5 16 27.5C11.9 27.5 8.2 26.3 5 24L16 4Z" stroke="currentColor" strokeWidth="3" strokeLinejoin="round" />
-    <path d="M7.5 23.5C10 22.4 12.8 21.8 16 21.8C19.2 21.8 22 22.4 24.5 23.5" stroke="currentColor" strokeWidth="3" strokeLinecap="round" />
-  </svg>
-);
+const API = import.meta.env.VITE_API_URL || "http://localhost:8080";
 
 export default function Homepage() {
   const navigate = useNavigate();
@@ -16,7 +11,7 @@ export default function Homepage() {
   
   const fetchUser = async () => {
     try {
-    const res = await fetch("http://localhost:8080/user", { credentials: "include" });
+    const res = await fetch(`${API}/user`, { credentials: "include" });
     if (res.ok) {
       const userData = await res.json();
       setCurrUser(userData);
@@ -35,7 +30,7 @@ export default function Homepage() {
 
   const handleLogout = async () => {
     try {
-      const response = await fetch('http://localhost:8080/logout', {
+      const response = await fetch(`${API}/logout`, {
         method: 'POST',
         credentials: 'include',
       });
@@ -69,7 +64,7 @@ export default function Homepage() {
       <header className="home-header">
         <nav className="app-container home-nav" aria-label="Primary">
           <button className="brand-lockup" type="button" onClick={() => navigate("/")} aria-label="TaskFlow home">
-            <LogoIcon />
+            <i className="fa-solid fa-list-check brand-mark"></i>
             <span>TaskFlow</span>
           </button>
           <div className="home-actions">

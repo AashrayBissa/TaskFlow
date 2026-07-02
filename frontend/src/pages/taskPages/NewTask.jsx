@@ -4,6 +4,8 @@ import toast from "react-hot-toast";
 import PriorityBox from "../../components/ui/PriorityBox/PriorityBox";
 import Switch from "../../components/ui/Switch/Switch";
 
+const API = import.meta.env.VITE_API_URL || "http://localhost:8080";
+
 export default function NewTask() {
   let navigate = useNavigate();
   
@@ -24,7 +26,7 @@ export default function NewTask() {
 
   let handleSubmit = async(event) => {
     event.preventDefault();
-    const response = await fetch("http://localhost:8080/dashboard/addTask",{
+    const response = await fetch(`${API}/dashboard/addTask`,{
       method: "POST",
       headers: {"Content-Type": "application/json"},
       credentials: "include",

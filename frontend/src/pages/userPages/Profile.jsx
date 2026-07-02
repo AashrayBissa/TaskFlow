@@ -1,13 +1,15 @@
 import { useEffect, useState } from "react";
 import Navbar from "../../components/layouts/Navbar/Navbar";
 
+const API = import.meta.env.VITE_API_URL || "http://localhost:8080";
+
 export default function Profile() {
   const [user, setUser] = useState(null);
 
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const response = await fetch("http://localhost:8080/user", {
+        const response = await fetch(`${API}/user`, {
           credentials: "include",
         });
 
