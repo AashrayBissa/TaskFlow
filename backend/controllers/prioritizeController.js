@@ -67,14 +67,14 @@ Return valid JSON only (no markdown, no explanation):
     {
       "taskId": "<original _id>",
       "rank": <number>,
-      "reasoning": "<why this rank>"
+      "reasoning": "<why this task got this rank, 10-15 words>"
     }
   ],
   "summary": "<one-sentence takeaway>",
   "executionSequence": "<suggested order to tackle them>"
 }
 
-Order prioritizedTasks by rank ascending (1 = most urgent/important).`;
+Order prioritizedTasks by rank ascending (1 = most urgent/important). For each task, include a short reasoning explaining why it was placed at that rank.`;
 }
 
 async function callGemini(prompt) {

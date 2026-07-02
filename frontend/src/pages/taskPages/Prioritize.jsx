@@ -45,6 +45,16 @@ export default function Prioritize() {
     }
   }
 
+  function refreshTasks() {
+    fetch(`${API}/dashboard`, { credentials: "include" })
+      .then((r) => r.json())
+      .then((data) => {
+        const list = Array.isArray(data) ? data : [];
+        setTasks(list);
+      })
+      .catch(() => toast.error("Failed to refresh tasks."));
+  }
+
   function generateNew() {
     setSelected({});
     setResults(null);
@@ -183,7 +193,7 @@ export default function Prioritize() {
                     const cleanTitle = step.replace(/^\d+[\.\)]\s*/, "").trim();
                     const task = tasks.find((t) => t.title.toLowerCase() === cleanTitle.toLowerCase());
                     return task ? (
-                      <Card key={i} task={task} fetchTasks={generateNew} />
+                      <Card key={i} task={task} fetchTasks={refreshTasks} />
                     ) : (
                       <article key={i} className="task-card">
                         <div className="task-card-body" style={{ padding: "1.15rem" }}>
@@ -202,7 +212,7 @@ export default function Prioritize() {
             <section className="task-grid-shell" aria-label="Prioritized Tasks" style={{ marginTop: 0 }}>
               <div className="task-grid">
                 {prioritizedTasks.map((task) => (
-                  <Card key={task._id} task={task} fetchTasks={generateNew} />
+                  <Card key={task._id} task={task} fetchTasks={refreshTasks} />
                 ))}
               </div>
             </section>
