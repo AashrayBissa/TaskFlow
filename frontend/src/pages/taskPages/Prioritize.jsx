@@ -1,6 +1,9 @@
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import Navbar from "../../components/layouts/Navbar/Navbar";
+import Card from "../../components/ui/Card/Card";
+
+const API = import.meta.env.VITE_API_URL || "http://localhost:8080";
 
 export default function Prioritize() {
   const [tasks, setTasks] = useState([]);
@@ -9,16 +12,23 @@ export default function Prioritize() {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    fetch("http://localhost:8080/dashboard", { credentials: "include" })
+    fetch(`${API}/dashboard`, { credentials: "include" })
       .then((r) => r.json())
       .then((data) => {
         const list = Array.isArray(data) ? data : [];
         setTasks(list);
         const allChecked = {};
-        list.forEach((t) => (allChecked[t._id] = true));
+        list.filter((t) => !t.isCompleted).forEach((t) => (allChecked[t._id] = true));
         setSelected(allChecked);
       })
       .catch(() => toast.error("Failed to load tasks."));
+
+    fetch(`${API}/dashboard/get-prioritization`, { credentials: "include" })
+      .then((r) => r.json())
+      .then((data) => {
+        if (data.results) setResults(data.results);
+      })
+      .catch(() => {});
   }, []);
 
   function toggle(id) {
@@ -27,48 +37,68 @@ export default function Prioritize() {
 
   function toggleAll() {
     const allChecked = {};
-    tasks.forEach((t) => (allChecked[t._id] = true));
-    if (tasks.every((t) => selected[t._id])) {
+    activeTasks.forEach((t) => (allChecked[t._id] = true));
+    if (activeTasks.every((t) => selected[t._id])) {
       setSelected({});
     } else {
       setSelected(allChecked);
     }
   }
 
+  function generateNew() {
+    setSelected({});
+    setResults(null);
+    fetch(`${API}/dashboard/save-prioritization`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      credentials: "include",
+      body: JSON.stringify({ results: null }),
+    }).catch(() => {});
+  }
+
   async function handlePrioritize() {
-    const taskIds = tasks.filter((t) => selected[t._id]).map((t) => t._id);
+    const taskIds = activeTasks.filter((t) => selected[t._id]).map((t) => t._id);
     if (taskIds.length === 0) {
       toast.error("Select at least one task.");
       return;
     }
-
     setLoading(true);
     try {
-      const res = await fetch("http://localhost:8080/dashboard/prioritize", {
+      const res = await fetch(`${API}/dashboard/prioritize`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
         body: JSON.stringify({ taskIds }),
       });
       const data = await res.json();
-
       if (data.aiUnavailable) {
         toast("AI key not set. Showing tasks in default order.", { icon: "?" });
-        setResults({
+        const fallback = {
           prioritized: data.tasks.map((t) => ({ ...t, rank: 0, reasoning: "" })),
           summary: null,
           executionSequence: null,
           aiUnavailable: true,
-        });
+        };
+        setResults(fallback);
+        fetch(`${API}/dashboard/save-prioritization`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          credentials: "include",
+          body: JSON.stringify({ results: fallback }),
+        }).catch(() => {});
         return;
       }
-
       if (!res.ok) {
         toast.error(data.message || "Prioritization failed.");
         return;
       }
-
       setResults(data);
+      fetch(`${API}/dashboard/save-prioritization`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify({ results: data }),
+      }).catch(() => {});
       toast.success("Tasks prioritized!");
     } catch {
       toast.error("Could not reach the server.");
@@ -77,96 +107,107 @@ export default function Prioritize() {
     }
   }
 
-  const selectedCount = tasks.filter((t) => selected[t._id]).length;
-  const allSelected = tasks.length > 0 && tasks.every((t) => selected[t._id]);
+  const activeTasks = tasks.filter((t) => !t.isCompleted);
+  const selectedCount = activeTasks.filter((t) => selected[t._id]).length;
+  const allSelected = activeTasks.length > 0 && activeTasks.every((t) => selected[t._id]);
+
+  const prioritizedTasks = results
+    ? results.prioritized
+        .map((p) => {
+          const task = tasks.find((t) => t._id === p.taskId);
+          return task ? { ...task, rank: p.rank, reasoning: p.reasoning } : null;
+        })
+        .filter(Boolean)
+    : [];
 
   return (
     <div className="page-shell">
       <Navbar />
       <div className="app-container" style={{ paddingTop: "2rem" }}>
-        <div className="dashboard-heading-row" style={{ marginBottom: "1.5rem" }}>
-          <div>
-            <h1 className="dashboard-title" style={{ margin: 0 }}>AI Prioritize</h1>
-            <p style={{ color: "var(--tf-muted)", margin: "0.25rem 0 0" }}>Select tasks to get AI-powered priority ranking.</p>
-          </div>
-          <div style={{ display: "flex", gap: "0.75rem", alignItems: "center", flexShrink: 0 }}>
-            <span style={{ color: "var(--tf-muted)", fontWeight: 600, whiteSpace: "nowrap" }}>{selectedCount} of {tasks.length} selected</span>
-            <button onClick={handlePrioritize} disabled={loading || selectedCount === 0} className="tf-button tf-button-primary" style={{ minWidth: "10rem" }}>
-              {loading ? "Analyzing..." : "Prioritize"}
-            </button>
-          </div>
-        </div>
-
-        {results && (
-          <section style={{ marginBottom: "2rem", border: "1px solid var(--tf-border)", borderRadius: "0.9rem", background: "var(--tf-surface)", padding: "1.5rem" }}>
-            <h2 style={{ margin: "0 0 1rem", fontSize: "1.3rem", fontWeight: 800 }}>Priority Results</h2>
-            {results.summary && <p style={{ color: "var(--tf-muted)", marginBottom: "1rem", fontStyle: "italic" }}>{results.summary}</p>}
-            {results.executionSequence && (
-              <div style={{ marginBottom: "1rem", padding: "0.75rem 1rem", borderRadius: "0.5rem", background: "var(--tf-surface-raised)" }}>
-                <strong>Suggested sequence:</strong> {results.executionSequence}
+        {!results ? (
+          <>
+            <div className="dashboard-heading-row" style={{ marginBottom: "1.5rem" }}>
+              <div>
+                <h1 className="dashboard-title" style={{ margin: 0 }}>AI Prioritize</h1>
+                <p style={{ color: "var(--tf-muted)", margin: "0.25rem 0 0" }}>Select tasks to get AI-powered priority ranking.</p>
               </div>
-            )}
-            <div style={{ display: "grid", gap: "0.75rem" }}>
-              {results.prioritized.map((p, i) => {
-                const task = tasks.find((t) => t._id === p.taskId);
-                if (!task) return null;
-                return (
-                  <div key={p.taskId} style={{ display: "flex", gap: "1rem", alignItems: "flex-start", padding: "1rem", borderRadius: "0.7rem", background: i === 0 ? "var(--tf-primary)" : "var(--tf-surface-raised)", color: i === 0 ? "#fff" : "var(--tf-text)" }}>
-                    <div style={{ fontSize: "1.5rem", fontWeight: 900, minWidth: "2rem", textAlign: "center" }}>#{p.rank}</div>
-                    <div style={{ flex: 1 }}>
-                      <div style={{ fontWeight: 700, fontSize: "1.1rem" }}>{task.title}</div>
-                      {p.reasoning && <div style={{ marginTop: "0.35rem", opacity: 0.8 }}>{p.reasoning}</div>}
-                    </div>
-                    <div style={{ display: "flex", gap: "0.5rem", flexShrink: 0 }}>
-                      <span className={`task-badge task-badge-${task.priority}`}>{task.priority}</span>
-                    </div>
-                  </div>
-                );
-              })}
+              <div style={{ display: "flex", gap: "0.75rem", alignItems: "center", flexShrink: 0 }}>
+                <span style={{ color: "var(--tf-muted)", fontWeight: 600, whiteSpace: "nowrap" }}>{selectedCount} of {activeTasks.length} selected</span>
+                <button onClick={handlePrioritize} disabled={loading || selectedCount === 0} className="tf-button tf-button-primary" style={{ minWidth: "10rem" }}>
+                  {loading ? "Analyzing..." : "Prioritize"}
+                </button>
+              </div>
             </div>
-          </section>
-        )}
-
-        <div style={{ marginBottom: "1rem" }}>
-          <label style={{ display: "inline-flex", alignItems: "center", gap: "0.5rem", cursor: "pointer", fontWeight: 600, color: "var(--tf-muted-strong)" }}>
-            <input type="checkbox" checked={allSelected} onChange={toggleAll} style={{ width: "1.1rem", height: "1.1rem" }} />
-            Select all / none
-          </label>
-        </div>
-
-        <section className="task-grid-shell" aria-label="Tasks" style={{ marginTop: 0 }}>
-          <div className="task-grid">
-            {tasks.map((task) => (
-              <label key={task._id} className="task-card" style={{ cursor: "pointer", opacity: selected[task._id] ? 1 : 0.5 }}>
-                <div className="task-card-body" style={{ flexDirection: "row", gap: "0.75rem" }}>
-                  <input type="checkbox" checked={!!selected[task._id]} onChange={() => toggle(task._id)} style={{ marginTop: "0.2rem", width: "1.2rem", height: "1.2rem", accentColor: "var(--tf-primary)", flexShrink: 0 }} />
-                  <div style={{ flex: 1, minWidth: 0 }}>
-                    <div className="task-card-head">
-                      <div className="task-title-row">
-                        <h2 className="task-title">{task.title}</h2>
-                      </div>
-                    </div>
-                    <p className="description" style={{ margin: "0.35rem 0 0.75rem 0" }}>{task.description}</p>
-                    <div className="task-card-footer">
-                      <div className="task-badges">
-                        <span className={`task-badge task-badge-${task.priority}`}>{task.priority}</span>
-                        <span className={`task-badge ${task.isCompleted ? "task-badge-completed" : "task-badge-pending"}`}>
-                          {task.isCompleted ? "Completed" : "Pending"}
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
+            <div style={{ marginBottom: "1rem" }}>
+              <label style={{ display: "inline-flex", alignItems: "center", gap: "0.5rem", cursor: "pointer", fontWeight: 600, color: "var(--tf-muted-strong)" }}>
+                <input type="checkbox" checked={allSelected} onChange={toggleAll} style={{ width: "1.1rem", height: "1.1rem" }} />
+                Select all / none
               </label>
-            ))}
-            {tasks.length === 0 && (
-              <div className="empty-state">
-                <h2>No tasks found</h2>
-                <p>Create some tasks first, then use AI to prioritize them.</p>
+            </div>
+            <section className="task-grid-shell" aria-label="Tasks" style={{ marginTop: 0 }}>
+              <div className="task-grid">
+                {activeTasks.map((task) => (
+                  <Card
+                    key={task._id}
+                    task={task}
+                    selectMode={true}
+                    selected={!!selected[task._id]}
+                    onSelect={() => toggle(task._id)}
+                  />
+                ))}
+                {activeTasks.length === 0 && (
+                  <div className="empty-state">
+                    <h2>No pending tasks</h2>
+                    <p>All tasks are completed. Create new tasks to prioritize.</p>
+                  </div>
+                )}
+              </div>
+            </section>
+          </>
+        ) : (
+          <>
+            <div className="dashboard-heading-row" style={{ marginBottom: "1.5rem" }}>
+              <div>
+                <h1 className="dashboard-title" style={{ margin: 0 }}>Prioritized Tasks</h1>
+                {results.summary && <p style={{ color: "var(--tf-muted)", margin: "0.25rem 0 0" }}>{results.summary}</p>}
+              </div>
+              <button onClick={generateNew} className="tf-button tf-button-primary" style={{ minWidth: "10rem" }}>
+                Generate New
+              </button>
+            </div>
+            {results.executionSequence && (
+              <div style={{ marginBottom: "1.5rem" }}>
+                <h2 style={{ fontSize: "1.1rem", fontWeight: 700, marginBottom: "0.75rem" }}>Suggested Execution Sequence</h2>
+                <div style={{ display: "flex", flexDirection: "column", gap: "1.2rem" }}>
+                  {results.executionSequence.split(/\s*->\s*|,\s*\d+[\.\)]\s*/).map((step, i) => {
+                    const cleanTitle = step.replace(/^\d+[\.\)]\s*/, "").trim();
+                    const task = tasks.find((t) => t.title.toLowerCase() === cleanTitle.toLowerCase());
+                    return task ? (
+                      <Card key={i} task={task} fetchTasks={generateNew} />
+                    ) : (
+                      <article key={i} className="task-card">
+                        <div className="task-card-body" style={{ padding: "1.15rem" }}>
+                          <div className="task-card-head">
+                            <div className="task-title-row">
+                              <h2 className="task-title">{cleanTitle}</h2>
+                            </div>
+                          </div>
+                        </div>
+                      </article>
+                    );
+                  })}
+                </div>
               </div>
             )}
-          </div>
-        </section>
+            <section className="task-grid-shell" aria-label="Prioritized Tasks" style={{ marginTop: 0 }}>
+              <div className="task-grid">
+                {prioritizedTasks.map((task) => (
+                  <Card key={task._id} task={task} fetchTasks={generateNew} />
+                ))}
+              </div>
+            </section>
+          </>
+        )}
       </div>
     </div>
   );

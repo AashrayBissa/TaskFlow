@@ -7,6 +7,7 @@ const { taskSchema } = require("../schema");
 
 const {getTasks, addTask, delTask, editTask, checkTask, searchTask} = require("../controllers/taskController");
 const {prioritizeTasks} = require("../controllers/prioritizeController");
+const { savePrioritization, getPrioritization } = require("../controllers/prioritizeController");
 
 //Routes
 router.get("/", authentication, getTasks)
@@ -16,6 +17,8 @@ router.put("/editTask/:id", authentication, validate(taskSchema), editTask);
 router.put("/checkTask/:id", authentication, checkTask);
 router.get("/search", authentication, searchTask);
 router.post("/prioritize", authentication, prioritizeTasks);
+router.post("/save-prioritization", authentication, savePrioritization);
+router.get("/get-prioritization", authentication, getPrioritization);
 
  
 module.exports = router;

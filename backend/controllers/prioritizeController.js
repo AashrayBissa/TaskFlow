@@ -1,4 +1,5 @@
 const Task = require("../models/taskSchema");
+const User = require('../models/userSchema');
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
 const GEMINI_MODEL = process.env.GEMINI_MODEL || "gemini-2.0-flash";
 
@@ -111,3 +112,24 @@ async function callGemini(prompt) {
     return null;
   }
 }
+
+module.exports.savePrioritization = async (req, res) => {
+  try {
+    const { results } = req.body;
+    await User.findByIdAndUpdate(req.user._id, { prioritization: results || null });
+    res.json({ message: "Prioritization saved." });
+  } catch (error) {
+    console.error("Save prioritization error:", error);
+    res.status(500).json({ message: "Failed to save prioritization." });
+  }
+};
+
+module.exports.getPrioritization = async (req, res) => {
+  try {
+    const user = await User.findById(req.user._id).select("prioritization");
+    res.json({ results: user?.prioritization || null });
+  } catch (error) {
+    console.error("Get prioritization error:", error);
+    res.status(500).json({ message: "Failed to get prioritization." });
+  }
+};

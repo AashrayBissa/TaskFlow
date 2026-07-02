@@ -15,6 +15,11 @@ const userSchema = new Schema({
     password:{
         type:String,
         required: true
+    },
+
+    prioritization: {
+        type: Schema.Types.Mixed,
+        default: null
     }
 });
 

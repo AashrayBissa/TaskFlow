@@ -3,7 +3,7 @@ import "./Card.css";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 
-export default function Card({task, fetchTasks}) {
+export default function Card({task, fetchTasks, selectMode, selected, onSelect}) {
 
     const navigate = useNavigate();
 
@@ -74,26 +74,32 @@ export default function Card({task, fetchTasks}) {
     }
  
     return (
-        <article className="task-card">
+        <article className="task-card" style={selectMode ? { cursor: "pointer", opacity: selected ? 1 : 0.5 } : {}} onClick={selectMode ? onSelect : undefined}>
             <div className="task-card-body">
                 <div className="task-card-head">
                     <div className="task-title-row">
-                        <input className="task-check" type="checkbox" checked={Boolean(task.isCompleted)} onChange={()=>handleCheck(task)} aria-label={`Mark ${task.title} as ${task.isCompleted ? "pending" : "completed"}`}/>
+                        {selectMode ? (
+                            <input className="task-check" type="checkbox" checked={!!selected} onClick={(e) => e.stopPropagation()} onChange={onSelect} aria-label={`Select ${task.title}`} />
+                        ) : (
+                            <input className="task-check" type="checkbox" checked={Boolean(task.isCompleted)} onChange={()=>handleCheck(task)} aria-label={`Mark ${task.title} as ${task.isCompleted ? "pending" : "completed"}`}/>
+                        )}
                         <h2 className={`task-title ${task.isCompleted ? "task-done" : ""}`}>{task.title}</h2>
                     </div>
-                    <div className="task-card-actions">
-                        <button className="icon-button editIcon" onClick={handleEdit} aria-label={`Edit ${task.title}`}>
-                            <svg aria-hidden="true" width="21" height="21" viewBox="0 0 24 24" fill="none">
-                                <path d="M4 20h4.2L19.3 8.9a2 2 0 0 0 0-2.8L17.9 4.7a2 2 0 0 0-2.8 0L4 15.8V20Z" stroke="currentColor" strokeWidth="2.4" strokeLinejoin="round" />
-                                <path d="M14 6l4 4" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" />
-                            </svg>
-                        </button> 
-                        <button onClick={()=>handleDelete(task)} className="icon-button deleteIcon" aria-label={`Delete ${task.title}`}>
-                            <svg aria-hidden="true" width="21" height="21" viewBox="0 0 24 24" fill="none">
-                                <path d="M4 7h16M9 7V5h6v2M7 7l1 13h8l1-13" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" />
-                            </svg>
-                        </button>
-                    </div>
+                    {!selectMode && (
+                        <div className="task-card-actions">
+                            <button className="icon-button editIcon" onClick={handleEdit} aria-label={`Edit ${task.title}`}>
+                                <svg aria-hidden="true" width="21" height="21" viewBox="0 0 24 24" fill="none">
+                                    <path d="M4 20h4.2L19.3 8.9a2 2 0 0 0 0-2.8L17.9 4.7a2 2 0 0 0-2.8 0L4 15.8V20Z" stroke="currentColor" strokeWidth="2.4" strokeLinejoin="round" />
+                                    <path d="M14 6l4 4" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" />
+                                </svg>
+                            </button> 
+                            <button onClick={()=>handleDelete(task)} className="icon-button deleteIcon" aria-label={`Delete ${task.title}`}>
+                                <svg aria-hidden="true" width="21" height="21" viewBox="0 0 24 24" fill="none">
+                                    <path d="M4 7h16M9 7V5h6v2M7 7l1 13h8l1-13" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" />
+                                </svg>
+                            </button>
+                        </div>
+                    )}
                 </div>
                 <p className={`description ${task.isCompleted ? "task-done" : ""}`}>{task.description}</p>
                 <div className="task-card-footer">
