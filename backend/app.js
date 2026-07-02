@@ -3,7 +3,7 @@ const app = express();
 const path = require("path");
 const cors = require("cors");
 const cookieParser = require('cookie-parser')
-const port = 8080;
+const port = process.env.PORT || 8080;
 
 const userRoutes = require("./routes/userRoutes");
 const taskRoutes = require("./routes/taskRoutes");
@@ -11,11 +11,8 @@ const taskRoutes = require("./routes/taskRoutes");
 const connectDB = require('./config/dbConfig');
 connectDB();
 
-//Requiring Mongoose and Models
-const userSchema = require("./models/userSchema");
-
 app.use(cors({
-    origin: "http://localhost:5173",
+    origin: process.env.CORS_ORIGIN || "http://localhost:5173",
     credentials: true,             
 }));
 app.use(cookieParser());

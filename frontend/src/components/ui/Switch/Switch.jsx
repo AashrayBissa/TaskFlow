@@ -1,14 +1,11 @@
-import react from "react"
 import "./Switch.css"
 
-export default function Switch() {
+export default function Switch({ checked, onChange, id = "task-status" }) {
     return (
-        <div className="outer">
-            <input type="checkbox" id="inp" name="switch" />
-            <label htmlFor="inp" id="RLabel">
-                <span htmlFor="inp" id="CLabel">
-                    <span htmlFor="inp" id="ILabel"></span>
-                </span>
+        <div className="switch-outer">
+            <input className="switch-input" type="checkbox" id={id} name="isCompleted" checked={checked} onChange={onChange} />
+            <label htmlFor={id} className="switch-track" aria-label="Toggle task completion">
+                <span className="switch-thumb"></span>
             </label>
         </div>
     );

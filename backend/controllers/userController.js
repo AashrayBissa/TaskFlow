@@ -2,6 +2,8 @@ const User = require('../models/userSchema');
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 
+const JWT_SECRET = process.env.JWT_SECRET || "secret";
+
 module.exports.getUser = async (req, res) => {
     const user = await User.findById(req.user._id).select("-password");
     if (!user) return res.status(404).json({ message: "User not found" });
@@ -18,7 +20,7 @@ module.exports.signupInfo = async(req,res)=>{
     let newUser =  new User({username, email, password: hashPass});
     await newUser.save();
     
-    const token = jwt.sign({_id: newUser._id,email: newUser.email}, "secret", {expiresIn: "4h"});
+    const token = jwt.sign({_id: newUser._id,email: newUser.email}, JWT_SECRET, {expiresIn: "4h"});
     res.cookie("myToken",token, {
         httpOnly: true,
         sameSite: "lax",      
@@ -39,7 +41,7 @@ module.exports.loginInfo = async(req,res,next) => {
     if(!isMatch){
        return res.status(400).json({message: "Please enter correct password"});
     }
-    const token = jwt.sign({  _id: user._id, email: user.email}, "secret", {expiresIn: "4h"});
+    const token = jwt.sign({  _id: user._id, email: user.email}, JWT_SECRET, {expiresIn: "4h"});
     res.cookie("myToken",token, {
         httpOnly: true,
         sameSite: "lax",      

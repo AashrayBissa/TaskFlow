@@ -1,4 +1,3 @@
-import React from 'react';
 import './PriorityBox.css';
 
 export default function PriorityBox({handleInputChange, task}) {

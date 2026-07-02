@@ -1,4 +1,3 @@
-import React from "react";
 import { useState } from "react";
 import { useNavigate, useParams, useLocation } from "react-router-dom";
 import toast from "react-hot-toast";
@@ -14,18 +13,19 @@ export default function EditTask() {
   let [editTask, setEditTask] = useState({
     title: task?.title || "",
     description: task?.description || "",
-    dueDate: task?.dueDate || new Date(Date.now).toLocaleDateString("en-IN"),
-    priority: task?.priority || "medium"
+    dueDate: task?.dueDate ? new Date(task.dueDate).toISOString().split("T")[0] : new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString().split("T")[0],
+    priority: task?.priority || "medium",
+    isCompleted: Boolean(task?.isCompleted)
   });
 
   function handleInputChange(event) {
+    const { name, value, type, checked } = event.target;
     setEditTask((currInfo) => {
-      return { ...currInfo, [event.target.name]: event.target.value };
+      return { ...currInfo, [name]: type === "checkbox" ? checked : value };
     });
   }
 
   let handleSubmit = async(event) => {
-    console.log(editTask);
     event.preventDefault();
 
     const response = await fetch(`http://localhost:8080/dashboard/editTask/${id}`,{
@@ -34,89 +34,92 @@ export default function EditTask() {
       credentials: "include",
       body: JSON.stringify(editTask)
     });
-    const res = await response.json();
-    console.log(res);
+    const res = await response.json().catch(() => ({}));
+
+    if(!response.ok){
+      toast.error(res.message || "Task could not be updated.");
+      return;
+    }
 
     navigate("/dashboard");
     toast.success("Task updated successfully!");
   }
 
   const handleCancel = () => {
-    toast.error("No edits made");
     navigate("/dashboard");
   }
 
   return (
-    <>
-      <div className="w-full h-screen flex flex-col justify-center items-center">
-        <h2 className="text-4xl font-bold mb-5" >Edit your task</h2>
-        <p className="text-xl mb-10 text-gray-500">
-          Fill in the details to edit your task
-        </p>
-        <form action="" onSubmit={handleSubmit} className="grid gap-5">
-          <div className="grid gap-2 w-md">
-            <label htmlFor="title" className="block text-start">
-              Title
-            </label>
+    <main className="task-modal-shell">
+      <section className="task-modal" aria-labelledby="task-modal-title">
+        <div className="task-modal-header">
+          <div>
+            <h1 id="task-modal-title" className="task-modal-title">Edit Task</h1>
+            <p className="task-modal-copy">Update the details for this task.</p>
+          </div>
+          <button type="button" className="icon-button" onClick={handleCancel} aria-label="Close edit task form">
+            <svg aria-hidden="true" width="23" height="23" viewBox="0 0 24 24" fill="none">
+              <path d="M6 6l12 12M18 6L6 18" stroke="currentColor" strokeWidth="2.6" strokeLinecap="round" />
+            </svg>
+          </button>
+        </div>
+        <form onSubmit={handleSubmit} className="task-form">
+          <div className="tf-form-field">
+            <label htmlFor="title" className="tf-label">Title</label>
             <input
-              className="block rounded-xl w-full"
+              className="tf-input"
               type="text"
               name="title"
               id="title"
-              placeholder="Enter a title"
+              placeholder="e.g., Design the new landing page"
               value={editTask.title}
               onChange={handleInputChange}
               required
             />
           </div>
-          <div className="grid gap-2 w-md">
-            <label htmlFor="description" className="block text-start">
-              Description
-            </label>
-            <input
-              className="block rounded-xl w-full"
-              type="text"
+          <div className="tf-form-field">
+            <label htmlFor="description" className="tf-label">Description</label>
+            <textarea
+              className="tf-input task-description"
               name="description"
               id="description"
-              placeholder="Enter your description"
+              placeholder="e.g., Create mockups, get feedback, and finalize the design"
               value={editTask.description}
               onChange={handleInputChange}
-              required
             />
           </div>
-          <div className="flex justify-between">
-            <div className="grid gap-1">
-              <label htmlFor="date" className="block text-start">
-                Due date
-              </label>
+          <div className="task-form-row">
+            <div className="tf-form-field">
+              <label htmlFor="dueDate" className="tf-label">Due Date</label>
               <input
-                className="block rounded-xl w-full"
+                className="tf-input"
                 type="date"
                 name="dueDate"
                 id="dueDate"
-                value={editTask.dueDate ? new Date(editTask.dueDate).toISOString().split("T")[0] : ""}
+                value={editTask.dueDate}
                 onChange={handleInputChange}
               />
             </div>
-            <div className="grid gap-0.5">
-              <label htmlFor="priority" className="block text-start">
-                Priority
-              </label>
+            <div className="tf-form-field">
+              <span className="tf-label">Priority</span>
               <PriorityBox handleInputChange={handleInputChange} task={editTask}></PriorityBox>
             </div>
           </div>
 
-          <div className="flex flex-row w-full mt-1 gap-6">
-            <button type="button" onClick={handleCancel} className="blueBtn h-10 w-full font-bold rounded-xl p-2">
-              Cancel
-            </button>
-            <button className="blueBtn h-10 w-full font-bold rounded-xl p-2">
-              Edit Task
-            </button>
+          <div className="task-status-row">
+            <span className="tf-label">Status</span>
+            <span>Incomplete</span>
+            <Switch id="edit-task-status" checked={editTask.isCompleted} onChange={handleInputChange} />
+            <span>Complete</span>
+          </div>
+
+          <div className="task-actions">
+            <button type="button" onClick={handleCancel} className="tf-button tf-button-secondary">Cancel</button>
+            <button className="tf-button tf-button-primary">Save Task</button>
           </div>
         </form>
-      </div>
-    </> 
+      </section>
+    </main>
   );
 }
 

@@ -1,2 +1,415 @@
-@import "tailwindcss";
-@plugin "daisyui";
+.page-shell {
+  min-height: 100dvh;
+  background:
+    radial-gradient(circle at 50% 54%, rgba(22, 136, 240, 0.08), transparent 28rem),
+    var(--tf-bg);
+  color: var(--tf-text);
+}
+
+.app-container {
+  width: min(100% - 2rem, 87.5rem);
+  margin: 0 auto;
+}
+
+.brand-mark {
+  display: inline-flex;
+  width: 2rem;
+  height: 2rem;
+  align-items: center;
+  justify-content: center;
+  color: var(--tf-primary);
+}
+
+.brand-lockup {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.85rem;
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: var(--tf-text);
+}
+
+.tf-button {
+  display: inline-flex;
+  min-width: 7.5rem;
+  min-height: 44px;
+  align-items: center;
+  justify-content: center;
+  gap: 0.55rem;
+  border: 0;
+  border-radius: 0.7rem;
+  padding: 0.65rem 1.35rem;
+  color: var(--tf-text);
+  font-weight: 800;
+  transition: background-color 180ms ease, transform 180ms ease, box-shadow 180ms ease;
+}
+
+.tf-button:hover {
+  transform: translateY(-1px);
+}
+
+.tf-button-primary {
+  background: var(--tf-primary);
+  box-shadow: 0 12px 28px rgba(22, 136, 240, 0.2);
+}
+
+.tf-button-primary:hover {
+  background: var(--tf-primary-hover);
+}
+
+.tf-button-secondary {
+  background: var(--tf-surface-raised);
+}
+
+.tf-button-secondary:hover {
+  background: #202c38;
+}
+
+.tf-form-field {
+  display: grid;
+  gap: 0.65rem;
+}
+
+.tf-label {
+  color: var(--tf-muted-strong);
+  font-weight: 700;
+}
+
+.tf-input {
+  width: 100%;
+  min-height: 3.75rem;
+  border: 1px solid transparent;
+  border-radius: 0.7rem;
+  background: var(--tf-field);
+  color: var(--tf-text);
+  padding: 0.85rem 1.15rem;
+  font-size: 1.1rem;
+  font-weight: 600;
+  transition: border-color 180ms ease, background-color 180ms ease;
+}
+
+.tf-input::placeholder {
+  color: #c4cbd4;
+  opacity: 0.9;
+}
+
+.tf-input:hover,
+.tf-input:focus {
+  border-color: var(--tf-border-strong);
+  background: #293642;
+}
+
+.auth-shell {
+  min-height: 100dvh;
+  display: flex;
+  justify-content: center;
+  padding: 2rem 1rem;
+}
+
+.auth-panel {
+  width: min(100%, 28rem);
+  margin-top: 1rem;
+  text-align: center;
+}
+
+.auth-brand {
+  display: inline-flex;
+  margin-bottom: 5.25rem;
+  font-size: 2rem;
+  font-weight: 800;
+}
+
+.auth-title {
+  margin: 0 0 1rem;
+  font-size: clamp(2rem, 5vw, 2.45rem);
+  line-height: 1.1;
+  font-weight: 900;
+}
+
+.auth-copy {
+  margin: 0 0 3rem;
+  color: var(--tf-muted);
+  font-size: 1.18rem;
+  font-weight: 600;
+}
+
+.auth-form {
+  display: grid;
+  gap: 1.45rem;
+  text-align: left;
+}
+
+.auth-form .tf-button {
+  width: 100%;
+  margin-top: 0.9rem;
+}
+
+.auth-link-copy {
+  margin: 0;
+  text-align: center;
+  color: var(--tf-muted);
+  font-weight: 600;
+}
+
+.auth-link-copy a {
+  color: #3b9cff;
+}
+
+.home-header {
+  position: fixed;
+  inset: 0 0 auto;
+  z-index: 10;
+  padding: 1.25rem 0;
+}
+
+.home-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.home-actions {
+  display: flex;
+  gap: 0.65rem;
+}
+
+.home-main {
+  min-height: 100dvh;
+  display: grid;
+  place-items: center;
+  padding: 7rem 1rem 3rem;
+}
+
+.home-card {
+  width: min(100%, 50rem);
+  border: 1px solid rgba(59, 75, 88, 0.5);
+  border-radius: 0.9rem;
+  background: linear-gradient(135deg, rgba(16, 27, 37, 0.82), rgba(12, 25, 36, 0.92));
+  padding: clamp(2rem, 7vw, 3.25rem);
+  text-align: center;
+}
+
+.home-title {
+  margin: 0;
+  font-size: clamp(3rem, 9vw, 5.7rem);
+  line-height: 0.95;
+  font-weight: 900;
+}
+
+.home-quote {
+  margin: 2rem 0 2.7rem;
+  color: var(--tf-muted);
+  font-size: clamp(1.1rem, 3vw, 1.5rem);
+  font-weight: 600;
+}
+
+.home-card-actions {
+  display: flex;
+  justify-content: center;
+  gap: 1.25rem;
+  flex-wrap: wrap;
+}
+
+.task-modal-shell {
+  min-height: 100dvh;
+  display: grid;
+  place-items: center;
+  background: rgba(17, 17, 17, 0.82);
+  padding: 1rem;
+}
+
+.task-modal {
+  width: min(100%, 43.75rem);
+  border-radius: 0.7rem;
+  background: var(--tf-surface);
+  box-shadow: var(--tf-shadow);
+  padding: clamp(1.5rem, 4vw, 2.5rem);
+}
+
+.task-modal-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.task-modal-title {
+  margin: 0 0 0.45rem;
+  font-size: 1.9rem;
+  font-weight: 900;
+}
+
+.task-modal-copy {
+  margin: 0;
+  color: var(--tf-muted);
+  font-size: 1.2rem;
+  font-weight: 600;
+}
+
+.icon-button {
+  display: inline-flex;
+  width: 44px;
+  min-width: 44px;
+  height: 44px;
+  min-height: 44px;
+  align-items: center;
+  justify-content: center;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--tf-muted);
+  transition: background-color 180ms ease, color 180ms ease;
+}
+
+.icon-button:hover {
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--tf-text);
+}
+
+.task-form {
+  display: grid;
+  gap: 1.35rem;
+}
+
+.task-description {
+  min-height: 8.75rem;
+  resize: vertical;
+}
+
+.task-form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.25rem;
+}
+
+.task-status-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  color: var(--tf-muted);
+  font-size: 1.05rem;
+  font-weight: 600;
+}
+
+.task-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+  margin-top: 1.8rem;
+}
+
+.profile-shell {
+  min-height: 100dvh;
+  background:
+    radial-gradient(circle at 50% 54%, rgba(22, 136, 240, 0.08), transparent 28rem),
+    var(--tf-bg);
+  color: var(--tf-text);
+}
+
+.profile-content {
+  width: min(100% - 2rem, 87.5rem);
+  margin: 0 auto;
+  padding-top: 2rem;
+}
+
+.profile-hero {
+  margin-bottom: 2rem;
+}
+
+.profile-card {
+  max-width: 32rem;
+  border: 1px solid var(--tf-border);
+  border-radius: 0.9rem;
+  background: var(--tf-surface);
+  padding: 2rem;
+  text-align: center;
+}
+
+.profile-avatar {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 1rem;
+}
+
+.profile-avatar-inner {
+  width: 5rem;
+  height: 5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  background: var(--tf-primary);
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: #fff;
+}
+
+.profile-name {
+  margin: 0 0 0.25rem;
+  font-size: 1.5rem;
+  font-weight: 800;
+}
+
+.profile-email {
+  margin: 0 0 1.5rem;
+  color: var(--tf-muted);
+}
+
+.profile-list {
+  display: grid;
+  gap: 0.75rem;
+  text-align: left;
+}
+
+.profile-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  border-bottom: 1px solid var(--tf-border);
+  padding-bottom: 0.75rem;
+}
+
+.profile-row-label {
+  color: var(--tf-muted);
+  font-weight: 600;
+}
+
+.profile-row-value {
+  font-weight: 600;
+}
+
+@media (max-width: 760px) {
+  .home-header {
+    position: static;
+  }
+
+  .home-main {
+    min-height: auto;
+    padding-top: 4rem;
+  }
+
+  .home-nav,
+  .home-actions,
+  .task-form-row,
+  .task-actions {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .task-form-row {
+    display: grid;
+    grid-template-columns: 1fr;
+  }
+
+  .tf-button,
+  .home-actions .tf-button {
+    width: 100%;
+  }
+
+  .auth-brand {
+    margin-bottom: 3rem;
+  }
+}

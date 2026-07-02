@@ -2,9 +2,6 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 
-
-import "./Signup.css";
-
 export default function Signup() {
 
   const navigate = useNavigate();
@@ -31,14 +28,13 @@ export default function Signup() {
       body: JSON.stringify(signupInfo),
     });
 
-    const res = await response.json();
-    console.log(res);
+    const res = await response.json().catch(() => ({}));
 
     if (response.ok) {
         navigate("/dashboard");
          toast.success(" Signed-in Successfully");
       } else {
-         toast.error("Signup failed. Please try again.");
+         toast.error(res.message || "Signup failed. Please try again.");
       }
     
     setSignupInfo({
@@ -50,68 +46,68 @@ export default function Signup() {
   }
 
   return (
-    <div className="w-full h-screen flex flex-col justify-center items-center">
-      <h1 className="text-4xl pb-4"><Link to="/"><i className="fa-solid fa-list-check"></i></Link></h1>
-      <h2 className="text-4xl font-bold mb-5">Create an account</h2>
-      <p className="text-xl mb-10 text-gray-500">
-        Start organizing your task and boosting your productivity
-      </p>
+    <main className="page-shell auth-shell">
+      <section className="auth-panel" aria-labelledby="signup-title">
+      <Link to="/" className="auth-brand">TaskFlow</Link>
+      <h1 id="signup-title" className="auth-title">Create an account</h1>
+      <p className="auth-copy">Start organizing your tasks and boosting your productivity.</p>
 
-      <form action="" onSubmit={handleSubmit} className="grid gap-5">
-        <div className="grid gap-2 w-md">
-          <label htmlFor="username" className="block text-start">
+      <form onSubmit={handleSubmit} className="auth-form">
+        <div className="tf-form-field">
+          <label htmlFor="username" className="tf-label">
             Username
           </label>
           <input
-            className="block rounded-xl w-full"
+            className="tf-input"
             type="text"
             name="username"
             id="username"
             placeholder="Enter a username"
             value={signupInfo.username}
             onChange={handleInputChange}
+            autoComplete="username"
             required
           />
         </div>
-        <div className="grid gap-2 w-md">
-          <label htmlFor="email" className="block text-start">
-            Email
+        <div className="tf-form-field">
+          <label htmlFor="email" className="tf-label">
+            Email address
           </label>
           <input
-            className="block rounded-xl w-full"
+            className="tf-input"
             type="email"
             name="email"
             id="email"
             placeholder="Enter your email"
             value={signupInfo.email}
             onChange={handleInputChange}
+            autoComplete="email"
             required
           />
         </div>
-        <div className="grid gap-2 w-md">
-          <label htmlFor="password" className="block text-start">
+        <div className="tf-form-field">
+          <label htmlFor="password" className="tf-label">
             Password
           </label>
           <input
-            className="block rounded-xl w-full"
+            className="tf-input"
             type="password"
             name="password"
             id="password"
             placeholder="Enter a password"
             value={signupInfo.password}
             onChange={handleInputChange}
+            autoComplete="new-password"
             required
           />
         </div>
-        <button type="submit" className="blueBtn mt-3 rounded-xl font-bold text-center"><p className="text-lg">Signup</p>
-        </button>
-        <p className="m-auto text-sm text-gray-300">
+        <button type="submit" className="tf-button tf-button-primary">Signup</button>
+        <p className="auth-link-copy">
           Already have an account?{" "}
-          <Link to="/login" className="text-blue-400">
-            Log in
-          </Link>
+          <Link to="/login">Log in</Link>
         </p>
       </form>
-    </div>
+      </section>
+    </main>
   );
 }

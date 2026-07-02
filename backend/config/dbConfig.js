@@ -1,9 +1,8 @@
 const mongoose = require('mongoose');
 
-connectDB().then(console.log("Database Working!!")).catch(err => console.log(err));
-
 async function connectDB() {
-  await mongoose.connect('mongodb://127.0.0.1:27017/taskflow');
+  await mongoose.connect(process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/taskflow');
+  console.log("Database Working!!");
 }
 
 module.exports = connectDB;

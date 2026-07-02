@@ -1,8 +1,13 @@
-import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import toast from "react-hot-toast";
 
+const LogoIcon = () => (
+  <svg aria-hidden="true" className="brand-mark" viewBox="0 0 32 32" fill="none">
+    <path d="M16 4L27 24C23.8 26.3 20.1 27.5 16 27.5C11.9 27.5 8.2 26.3 5 24L16 4Z" stroke="currentColor" strokeWidth="3" strokeLinejoin="round" />
+    <path d="M7.5 23.5C10 22.4 12.8 21.8 16 21.8C19.2 21.8 22 22.4 24.5 23.5" stroke="currentColor" strokeWidth="3" strokeLinecap="round" />
+  </svg>
+);
 
 export default function Homepage() {
   const navigate = useNavigate();
@@ -60,44 +65,48 @@ export default function Homepage() {
   }, []);
 
   return (
-    <div className="w-full h-screen flex flex-col justify-center items-center">
-      <h1 className="text-4xl pb-4">
-        <i className="fa-solid fa-list-check"></i>
-      </h1>
-      <h1 className="text-5xl font-bold mb-5">TaskFlow</h1>
-      <h4 className="text-2xl mb-10 text-gray-500">
-        "The secret of getting ahead is getting started"
-      </h4>
-     
-      {currUser ? (<div>
-        <button
-          className="mt-1 w-30 h-10 text-center rounded-xl font-bold p-2 grayBtn"
-          onClick={handleLogout}
-        >
-          <p className="textarea-lg">Logout</p>
-        </button>
-        &nbsp; &nbsp; &nbsp;
-        <button
-          className="mt-1 w-30 h-10 text-center rounded-xl font-bold p-2 blueBtn"
-          onClick={handleDashboard}
-        >
-          <p className="textarea-lg">Dashboard</p>
-        </button>
-      </div>) : (<div>
-        <button
-          className="mt-1 w-30 h-10 text-center rounded-xl font-bold p-2 grayBtn"
-          onClick={handleLogin}
-        >
-          <p className="textarea-lg">Login</p>
-        </button>
-        &nbsp; &nbsp; &nbsp;
-        <button
-          className="mt-1 w-30 h-10 text-center rounded-xl font-bold p-2 blueBtn"
-          onClick={handleSignup}
-        >
-          <p className="textarea-lg">Signup</p>
-        </button>
-      </div>)}
+    <div className="page-shell">
+      <header className="home-header">
+        <nav className="app-container home-nav" aria-label="Primary">
+          <button className="brand-lockup" type="button" onClick={() => navigate("/")} aria-label="TaskFlow home">
+            <LogoIcon />
+            <span>TaskFlow</span>
+          </button>
+          <div className="home-actions">
+            {currUser ? (
+              <>
+                <button className="tf-button tf-button-secondary" type="button" onClick={handleLogout}>Logout</button>
+                <button className="tf-button tf-button-primary" type="button" onClick={handleDashboard}>Dashboard</button>
+              </>
+            ) : (
+              <>
+                <button className="tf-button tf-button-secondary" type="button" onClick={handleLogin}>Login</button>
+                <button className="tf-button tf-button-primary" type="button" onClick={handleSignup}>Signup</button>
+              </>
+            )}
+          </div>
+        </nav>
+      </header>
+
+      <main className="home-main">
+        <section className="home-card" aria-labelledby="home-title">
+          <h1 id="home-title" className="home-title">TaskFlow</h1>
+          <p className="home-quote">"The secret of getting ahead is getting started."</p>
+          <div className="home-card-actions">
+            {currUser ? (
+              <>
+                <button className="tf-button tf-button-secondary" type="button" onClick={handleLogout}>Logout</button>
+                <button className="tf-button tf-button-primary" type="button" onClick={handleDashboard}>Dashboard</button>
+              </>
+            ) : (
+              <>
+                <button className="tf-button tf-button-primary" type="button" onClick={handleLogin}>Login</button>
+                <button className="tf-button tf-button-secondary" type="button" onClick={handleSignup}>Signup</button>
+              </>
+            )}
+          </div>
+        </section>
+      </main>
     </div>
   );
 }

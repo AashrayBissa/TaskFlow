@@ -3,8 +3,8 @@ const Task = require("../models/taskSchema");
 
 module.exports.getTasks = async(req,res) => {
   try{
-    const tasks = await Task.find({owner: req.user._id});
-    res.status(201).json(tasks);
+    const tasks = await Task.find({owner: req.user._id}).sort({ dueDate: 1, _id: -1 });
+    res.status(200).json(tasks);
   }catch(error){
     res.status(400).json({message: "Fetching Data Failed"});
   }
@@ -21,44 +21,49 @@ module.exports.addTask = async (req,res, next) => {
 
 module.exports.delTask = async(req,res,next) =>{
   let {id} = req.params;
-  const task = await Task.findById(id);
+  if(!mongoose.isValidObjectId(id)){
+    return res.status(400).json({message:"Invalid task id."});
+  }
+  const task = await Task.findOne({_id: id, owner: req.user._id});
   if(!task){
-    return res.status(401).json({message:"task doesn't exists! "});
+    return res.status(404).json({message:"Task not found."});
   }
 
-  const delTask = await Task.deleteOne({_id : id});
-  res.status(201).json({message:"task deleted successfully!"});
+  await Task.deleteOne({_id : id, owner: req.user._id});
+  res.status(200).json({message:"Task deleted successfully!"});
 }
 
 module.exports.editTask = async(req,res,next) =>{
   let {id} = req.params;
-  const task = await Task.findById(id);
+  if(!mongoose.isValidObjectId(id)){
+    return res.status(400).json({message:"Invalid task id."});
+  }
+  const task = await Task.findOne({_id: id, owner: req.user._id});
   if(!task){
-    return res.status(401).json({message:"task doesn't exists! "});
+    return res.status(404).json({message:"Task not found."});
   }
 
-  let {title, description, dueDate, priority} = req.body;
+  let {title, description, dueDate, priority, isCompleted} = req.body;
 
-  const editTask = await Task.updateOne({_id: id}, {$set: {title, description, dueDate, priority}});
+  await Task.updateOne({_id: id, owner: req.user._id}, {$set: {title, description, dueDate, priority, isCompleted}});
   
-  res.status(201).json({message:"task updated successfully!"});
+  res.status(200).json({message:"Task updated successfully!"});
 
 }
 
 module.exports.checkTask = async(req,res,next) => {
   let {id} = req.params;
-  const task = await Task.findById(id);
+  if(!mongoose.isValidObjectId(id)){
+    return res.status(400).json({message:"Invalid task id."});
+  }
+  const task = await Task.findOne({_id: id, owner: req.user._id});
   if(!task){
-    return res.status(401).json({message:"task doesn't exists! "});
+    return res.status(404).json({message:"Task not found."});
   }
 
-  if(task.isCompleted === true){
-    await Task.updateOne({_id: id}, {$set: {isCompleted: false}});
-  }else{
-    await Task.updateOne({_id: id}, {$set: {isCompleted: true}});
-  }
+  await Task.updateOne({_id: id, owner: req.user._id}, {$set: {isCompleted: !task.isCompleted}});
   
-  res.status(201).json({message:"Status updated successfully!"});
+  res.status(200).json({message:"Status updated successfully!"});
 
 }
 

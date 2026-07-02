@@ -1,8 +1,14 @@
 import "./Navbar.css"
 
-import React from "react";
-import { Link, NavLink, useNavigate } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
+
+const LogoIcon = () => (
+  <svg aria-hidden="true" className="nav-logo-icon" viewBox="0 0 32 32" fill="none">
+    <path d="M5 9H14M5 16H21M5 23H13" stroke="currentColor" strokeWidth="3" strokeLinecap="round" />
+    <path d="M24 7L28 11L24 15" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
+  </svg>
+);
 
 export default function Navbar(){
     const navigate = useNavigate();
@@ -27,29 +33,25 @@ export default function Navbar(){
       
   };
   
-  const activeLink = (isActive) => {
-    return `text-sm ${isActive ? "text-blue-200 font-semibold" : "text-gray-300"}`;
+  const activeLink = ({ isActive }) => {
+    return `nav-link ${isActive ? "nav-link-active" : ""}`;
   }
 
 
     return (
         <>
-            <div className="nav shadow-sm flex items-center justify-between">
-                <div className="nav-start flex gap-2 ml-2 justify-center items-center">
-                    <i className="fa-solid fa-list-check text-xl mt-0.5"></i>
-                    <a className="text-xl font-bold">Taskflow</a>
+            <div className="nav">
+                <div className="nav-start">
+                    <LogoIcon />
+                    <span className="nav-brand">TaskFlow</span>
                 </div>
-                <div className="nav-center flex justify-center items-center gap-8">
-                  <NavLink to="/dashboard" className={({isActive}) => activeLink(isActive)}>Dashboard</NavLink>
-                  <NavLink to="/priority" className={({isActive}) => activeLink(isActive)}>Prioritize<sup>AI</sup></NavLink>
+                <div className="nav-center">
+                  <NavLink to="/dashboard" className={activeLink}>Dashboard</NavLink>
+                  <NavLink to="/profile" className={activeLink}>Profile</NavLink>
                 </div>
-                <div className="nav-end flex gap-5 items-center justify-between">
+                <div className="nav-end">
                     <button onClick={handleLogout} className="logoutBtn">Logout</button>
-                    <div className="avatar avatar-placeholder">
-                        <div className="bg-neutral text-neutral-content w-8 rounded-full">
-                            <span className="text-xs">UI</span>
-                        </div>
-                    </div>
+                    <div className="nav-avatar" aria-label="User initials">UI</div>
                 </div>
             </div>
         </>

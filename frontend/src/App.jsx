@@ -8,6 +8,7 @@ import Signup from "./pages/userPages/Signup/Signup"
 import NewTask from './pages/taskPages/NewTask';
 import EditTask from './pages/taskPages/EditTask';
 import Dashboard from "./pages/taskPages/Dashboard";
+import Profile from "./pages/userPages/Profile";
 
 import NotFound from "./pages/NotFound"
 
@@ -24,6 +25,7 @@ function App() {
           <Route path="/signup" element={<Signup/>} />
           <Route path='/dashboard' element={<Dashboard/>}/>
           <Route path='/dashboard/search' element={<Dashboard/>}/>
+          <Route path='/profile' element={<Profile/>}/>
           <Route path="/dashboard/addTask" element={<NewTask/>} />
           <Route path="/dashboard/editTask/:id" element={<EditTask/>} />
           <Route path="*" element={<NotFound/>} />

@@ -1,0 +1,23 @@
+{
+  "version": 1,
+  "skills": {
+    "mern-patterns": {
+      "source": "lobbi-docs/claude",
+      "sourceType": "github",
+      "skillPath": "plugins/lobbi-platform-manager/skills/mern-patterns/SKILL.md",
+      "computedHash": "886a5bb0b68e130663febd6af79f115872413cb282a0e2fc8557b9dca599ea2b"
+    },
+    "ponytail": {
+      "source": "dietrichgebert/ponytail",
+      "sourceType": "github",
+      "skillPath": "skills/ponytail/SKILL.md",
+      "computedHash": "491ccdc2c13a29cebabbac6bbe37f39e2e21ddff890c0b3fcf83b53b05dcc5c8"
+    },
+    "ui-ux-pro-max": {
+      "source": "nextlevelbuilder/ui-ux-pro-max-skill",
+      "sourceType": "github",
+      "skillPath": ".claude/skills/ui-ux-pro-max/SKILL.md",
+      "computedHash": "20c0ed05adb01fde3db5bb1aeefd61d33db2471bdadfd9c9ce19d30dd54a12fd"
+    }
+  }
+}

@@ -110,6 +110,12 @@ coverage/
 *.pid
 *.seed
 *.pid.lock
+graphify-out/
+.agents/
+UI/
+.opencode/
+AGENTS.md
+skills-lock
 
 # ==============================
 # ENV-SPECIFIC FOR MERN

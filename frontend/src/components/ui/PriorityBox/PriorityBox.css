@@ -1,29 +1,40 @@
 .radio-outer{
-    padding: 0.4%;
-    width: 16rem;
-    height: 2.6rem;
+    padding: 0.28rem;
+    width: 100%;
+    min-height: 3.15rem;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background-color: rgb(46, 46, 46);
-    border-radius: 16px;
+    background-color: var(--tf-field);
+    border-radius: 0.75rem;
 } 
 
 .radio-label{
+    flex: 1;
     display: flex;
     justify-content: center;
     align-items: center;
-    padding: 2.5% 9.1%;
-    height: 95%;
-    border-radius: 15px;
-    font-size: 90%;
-    transition: background-color 0.4s ease;
+    min-height: 2.45rem;
+    border-radius: 0.55rem;
+    color: var(--tf-muted);
+    font-size: 1rem;
+    font-weight: 800;
+    transition: background-color 180ms ease, color 180ms ease;
+    cursor: pointer;
 }
 
 .inp:checked + .radio-label{
-    background-color: black;
+    background-color: #111820;
+    color: var(--tf-text);
 }
 
 .inp{
-    display: none;
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.inp:focus-visible + .radio-label{
+    outline: 3px solid rgba(22, 136, 240, 0.45);
+    outline-offset: 2px;
 }

@@ -1,27 +1,101 @@
-.searchLabel{
-    background-color: #292828 !important;
+.dashboard-toolbar{
+    width: min(100% - 2rem, 87.5rem);
+    margin: 3.7rem auto 0;
+}
+
+.dashboard-heading-row{
     display: flex;
-    justify-content: center;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.5rem;
+}
+
+.dashboard-title{
+    margin: 0 0 0.55rem;
+    color: var(--tf-text);
+    font-size: clamp(2rem, 5vw, 2.85rem);
+    line-height: 1.1;
+    font-weight: 900;
+}
+
+.searchLabel{
+    width: min(100%, 21rem);
+    min-height: 3.15rem;
+    border: 1px solid var(--tf-border-strong);
+    background-color: var(--tf-surface-raised);
+    border-radius: 0.75rem;
+    display: flex;
     align-items: center;
     gap: 0.5rem;
+    padding: 0 0.9rem;
+}
+
+.search-icon{
+    width: 1.45rem;
+    height: 1.45rem;
+    color: var(--tf-muted);
 }
 
 .searchText{
-    background-color: #292828 !important;
+    min-width: 0;
+    flex: 1;
     height: 100%;
-    padding-left: 0.5rem;
-    padding-right: 0;
-    margin-left: 0.2rem;
-    border-left: 1px solid rgb(78, 76, 76);
+    border: 0;
+    background-color: transparent;
+    color: var(--tf-text);
+    font-size: 1.1rem;
+    font-weight: 700;
+    outline: 0;
 } 
 
-select{
-    background-color: #292828 !important;
+.searchText::placeholder{
+    color: var(--tf-muted-strong);
+}
+
+.filter-row{
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    margin-top: 1rem;
+}
+
+.filter-select{
+    min-height: 44px;
+    border: 1px solid var(--tf-border);
+    border-radius: 0.7rem;
+    background-color: var(--tf-surface-raised);
+    color: var(--tf-text);
+    padding: 0 0.85rem;
+    font-weight: 700;
 }
 
 .searchBtn{
-    display: flex;
-    place-items: center;
-    padding: 1rem;
-    height: 2rem;
+    display: inline-flex;
+    width: 44px;
+    min-width: 44px;
+    min-height: 44px;
+    align-items: center;
+    justify-content: center;
+    border: 0;
+    border-radius: 999px;
+    background: var(--tf-primary);
+    color: var(--tf-text);
+}
+
+.add-task-button{
+    min-width: 13rem;
+}
+
+@media (max-width: 760px){
+    .dashboard-heading-row,
+    .filter-row{
+        align-items: stretch;
+        flex-direction: column;
+    }
+
+    .searchLabel,
+    .add-task-button,
+    .filter-select{
+        width: 100%;
+    }
 }

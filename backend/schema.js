@@ -11,5 +11,5 @@ module.exports.taskSchema = Joi.object({
   description: Joi.string().allow("").optional(),
   dueDate: Joi.date().min("now").required(),
   priority: Joi.string().valid("low", "medium", "high").default("medium").required(),
-  status: Joi.string().valid("pending", "completed").default("pending"),
+  isCompleted: Joi.boolean().default(false),
 });

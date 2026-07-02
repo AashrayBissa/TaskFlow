@@ -3,8 +3,6 @@ import {Link, useNavigate} from "react-router-dom";
 
 import toast from "react-hot-toast";
 
-import "./Login.css";
-
 export default function Login(){
 
     let navigate = useNavigate();
@@ -29,14 +27,13 @@ export default function Login(){
             credentials: "include",
             body: JSON.stringify({email : formData.email, password : formData.password})
         });
-        const res = await response.json();
-        console.log(res);
+        const res = await response.json().catch(() => ({}));
 
         if (response.ok) {
         navigate("/dashboard");
         toast.success("Logged In Successfully");
       } else {
-        toast.error("Login failed. Please try again.");
+        toast.error(res.message || "Login failed. Please try again.");
 
         setFormData({
             email: "",
@@ -46,22 +43,24 @@ export default function Login(){
     };
 
     return(
-        <div className="w-full h-screen flex flex-col justify-center items-center">
-            <h1 className="text-4xl pb-4"><Link to="/"><i className="fa-solid fa-list-check"></i></Link></h1>
-            <h2 className="text-4xl font-bold mb-5">Log in to your account</h2>
-            <p className="text-xl mb-10 text-gray-500">Welcome back! Please enter your details</p>
-            <form action="" onSubmit={handleSubmit} className="grid gap-6">
-                <div className="grid gap-2 w-md">
-                    <label htmlFor="email" className="block text-start">Email</label>
-                    <input className="block rounded-xl w-full" type="text" name="email" id="email" placeholder="Enter your email" value={formData.email} onChange={handleInputChange} required/>
+        <main className="page-shell auth-shell">
+          <section className="auth-panel" aria-labelledby="login-title">
+            <Link to="/" className="auth-brand">TaskFlow</Link>
+            <h1 id="login-title" className="auth-title">Log in to your account</h1>
+            <p className="auth-copy">Welcome back! Please enter your details.</p>
+            <form onSubmit={handleSubmit} className="auth-form">
+                <div className="tf-form-field">
+                    <label htmlFor="email" className="tf-label">Email address</label>
+                    <input className="tf-input" type="email" name="email" id="email" placeholder="Enter your email" value={formData.email} onChange={handleInputChange} autoComplete="email" required/>
                 </div>
-                <div className="grid gap-2">
-                    <label htmlFor="password" className="block text-start">Password</label>
-                    <input className="block rounded-xl w-full" type="password" name="password" id="password" placeholder="Enter a password" value={formData.password} onChange={handleInputChange} required/>
+                <div className="tf-form-field">
+                    <label htmlFor="password" className="tf-label">Password</label>
+                    <input className="tf-input" type="password" name="password" id="password" placeholder="Enter your password" value={formData.password} onChange={handleInputChange} autoComplete="current-password" required/>
                 </div>
-                <button type="submit" className="blueBtn mt-3 rounded-xl font-bold text-center"><p className="text-lg">Login</p></button>
-                <p className="m-auto text-sm text-gray-300">Don't have an account? <Link to="/signup" className="text-blue-400">Sign up</Link></p>
+                <button type="submit" className="tf-button tf-button-primary">Login</button>
+                <p className="auth-link-copy">Don't have an account? <Link to="/signup">Sign up</Link></p>
             </form>
-        </div>
+          </section>
+        </main>
     );
 }

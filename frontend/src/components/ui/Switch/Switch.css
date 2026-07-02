@@ -1,50 +1,46 @@
-.outer{
-  padding: 1rem;
+.switch-outer{
+  display: inline-flex;
+  align-items: center;
 }
 
-#RLabel{
-  position: absolute;
+.switch-track{
   display: inline-block;
-  border: 1px solid #363434;
-  border-radius: 50px;
-  height: 1.1rem;
-  width: 2rem;
+  width: 3.25rem;
+  height: 1.85rem;
+  border-radius: 999px;
+  background: #2d3a46;
+  cursor: pointer;
+  position: relative;
+  transition: background-color 180ms ease;
 }
 
-#CLabel{
+.switch-thumb{
   border-radius: 50%;
-  padding: 0% 20%;
-  height: 80%;
-  background-color: #363434;
+  width: 1.45rem;
+  height: 1.45rem;
+  background-color: #f8fafc;
   position: absolute;
-  top: 10%;
-  left: 2%;
+  top: 0.2rem;
+  left: 0.22rem;
   transition: transform 0.4s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.24);
 }
 
-#ILabel{
-  border-radius: 50%;
-  padding: 0% 35%;
-  height: 63%;
-  background-color: #605e5e;
+.switch-input:checked + .switch-track{
+  background-color: #2d4b63;
+}
+
+.switch-input:checked + .switch-track .switch-thumb{
+  transform: translateX(1.35rem);
+}
+
+.switch-input{
   position: absolute;
-  top: 20%;
-  left: 15%;
+  opacity: 0;
+  pointer-events: none;
 }
 
-#inp:checked + #RLabel #CLabel #ILabel{
-  display: none;
-}
-
-#inp:checked + #RLabel #CLabel{
-  background-color: #2E95D9;
-  transform: translateX(133%);
-}
-
-#inp:checked + #RLabel{
-  border: 1px solid #2E95D9;
-}
-
-#inp{
-  display: none;
+.switch-input:focus-visible + .switch-track{
+  outline: 3px solid rgba(22, 136, 240, 0.45);
+  outline-offset: 3px;
 }
