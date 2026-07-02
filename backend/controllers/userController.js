@@ -23,8 +23,8 @@ module.exports.signupInfo = async(req,res)=>{
     const token = jwt.sign({_id: newUser._id,email: newUser.email}, JWT_SECRET, {expiresIn: "4h"});
     res.cookie("myToken",token, {
         httpOnly: true,
-        sameSite: "lax",      
-        secure: false
+        sameSite: "none",      
+        secure: true
     });
    
      return res.status(201).json({message:"User registered successfully!", token, user: {_id: newUser._id, username: newUser.username, email: newUser.email },});
@@ -44,8 +44,8 @@ module.exports.loginInfo = async(req,res,next) => {
     const token = jwt.sign({  _id: user._id, email: user.email}, JWT_SECRET, {expiresIn: "4h"});
     res.cookie("myToken",token, {
         httpOnly: true,
-        sameSite: "lax",      
-        secure: false
+        sameSite: "none",      
+        secure: true
     });
     
     return res.status(200).json({message: "Logged in successfully", token, user: { _id: user._id, username: user.username, email: user.email } });
